@@ -19,15 +19,7 @@ const Profil: React.FC = () => (
       <div className="komponenta"><InstruktorPocetna></InstruktorPocetna></div>
       <div className="komponenta"><InstruktorPocetna></InstruktorPocetna></div>      
     </div>
-    <div id="desniDiv">
-        <text className="tekst">Aktivni kursevi</text>
-        <div className="komponenta"><Kurs
-        ></Kurs></div>
-        <div className="komponenta"><Kurs></Kurs></div>      
-      
-      <div className="komponenta"><Kurs></Kurs></div>
-      <div className="komponenta"><Kurs></Kurs></div>      
-    </div>
+    
   </div>
   
 );

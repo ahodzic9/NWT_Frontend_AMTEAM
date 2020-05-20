@@ -10,8 +10,6 @@ import SignUp from "./components/signup.js";
 import Poc from "./components/poc.js";
 import InstruktorPocetna from './components/InstruktorPocetna/InstruktorPocetna';
 import Pocetna from './components/Pocetna/Pocetna';
-import Dobavljac from './components/DobavljacPocetna/Dobavljac';
-import Dobavljaci from './components/DobavljaciPocetna/Dobavljaci';
 import Profil from './components/profil/profil';
 
 function App() {
@@ -41,8 +39,6 @@ function App() {
             <Route path="/pocetna" component={Pocetna} />
             <Route path="/poc" component={Poc} />
             <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
-            <Route path="/dobavljac" component={Dobavljac} />
-            <Route path="/dobavljaci" component={Dobavljaci} />
             <Route path="/profil" component={Profil} />
           </Switch>
        

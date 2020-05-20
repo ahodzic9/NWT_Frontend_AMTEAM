@@ -8,8 +8,6 @@ import Login from "./login.js";
 import SignUp from "./signup.js";
 import InstruktorPocetna from './InstruktorPocetna/InstruktorPocetna';
 import Pocetna from './Pocetna/Pocetna';
-import Dobavljac from './DobavljacPocetna/Dobavljac';
-import Dobavljaci from './DobavljaciPocetna/Dobavljaci';
 import Profil from './profil/profil';
 
 function App() {
@@ -22,9 +20,6 @@ function App() {
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to={"/dobavljaci"}>Dobavljaci</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to={"/profil"}>Profil</Link>
@@ -40,8 +35,6 @@ function App() {
             <Route path="/pocetna" component={Pocetna} />
             
             <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
-            <Route path="/dobavljac" component={Dobavljac} />
-            <Route path="/dobavljaci" component={Dobavljaci} />
             <Route path="/profil" component={Profil} />
           </Switch>
        
