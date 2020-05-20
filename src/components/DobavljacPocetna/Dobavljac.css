@@ -1,0 +1,38 @@
+.Dobavljac {
+    background-color: black;
+}
+
+.card{
+    background-color: white;
+    margin:auto;
+    padding: 10px;
+    margin-top: 10px;
+    flex: 0.75;
+}
+.lijeva_tabela{
+    width: 100%;
+    text-align: left;
+}
+.tabela_dugmad{
+    width: 100%;
+}
+.najveca_tabela{
+    flex:1;
+    table-layout: fixed;
+    column-width: 25px;
+}
+
+.site-container{
+    flex-direction: column;
+    
+}
+.card-title{
+    
+}
+.card-body{
+    flex:0.85;
+    margin:auto;
+}
+.dugmad{
+    width: 100%;
+}
