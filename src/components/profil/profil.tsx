@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Link from "react-bootstrap/Row";
 //import {BrowserRouter as Router, Switch, Route} from "react-bootstrap";
 import InstruktorPocetna from '../instrukcija/instrukcija';
-import Kurs from '../kurs/kurs';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //import { Link } from 'react-bootstrap';
 
