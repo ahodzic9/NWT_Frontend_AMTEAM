@@ -3,7 +3,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import Chat from "./chat";
 import Login from "./login.js";
 import SignUp from "./signup.js";
 import InstruktorPocetna from './InstruktorPocetna/InstruktorPocetna';
@@ -13,7 +13,6 @@ import Profil from './profil/profil';
 function App() {
   return (<Router>
     <div className="App">
-      
       <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div className="container">
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
@@ -24,6 +23,9 @@ function App() {
               <li className="nav-item">
                 <Link className="nav-link" to={"/profil"}>Profil</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to={"/chat"}>Chat</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -33,7 +35,7 @@ function App() {
             <Route exact path='/' component={Login} />
             
             <Route path="/pocetna" component={Pocetna} />
-            
+            <Route path="/chat" component={Chat}/>
             <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
             <Route path="/profil" component={Profil} />
           </Switch>

@@ -9,7 +9,9 @@ export default class Login extends Component {
         super(props);
         this.state = {
             username: '',
-            password: ''};
+            password: '',
+            token: ''
+        };
 
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
@@ -22,29 +24,32 @@ export default class Login extends Component {
     handleChangePassword(event) {
         this.setState({password: event.target.value});
     }
-    render() {
-
-    const onClick = () => {
-
-        axios.post('http://localhost:8111/api/management/login', {
+    
+    onClick = event => {
+        event.preventDefault();
+        console.log("šaljem zahtjev")
+        var user = {
             "userName": this.state.username,
-	"password": this.state.password
-          })
-          .then(function (response) {
-              //alert(response.status);
+	        "password": this.state.password
+          };
+        axios.post('http://localhost:8111/api/management/login', user ).then(function (response) {
             if(response.status == 200){
+                localStorage.setItem('token', response.data.token);
                 window.location.replace("/poc");
             }
           })
           .catch(function (error) {
-              //alert(error);
+            alert(error);
             document.getElementById("pogresni_podaci").style.display = 'block';
           });
           
     }
+    
+    
+    render() {
         return (
             <div id="loginDiv">
-            <form>
+            <form onSubmit = {this.onClick}>
                 <h3>Sign In</h3>
 
                 <div className="form-group">
@@ -57,9 +62,7 @@ export default class Login extends Component {
                     <input  id = "password" onChange={this.handleChangePassword} type="password" className="form-control" placeholder="Enter password" />
                 </div>
                 <label id="pogresni_podaci" style={{display:"none", color:"red"}}>Pogresni korisnički podaci, pokušajte ponovo!</label>
-                
-
-                <button type="button" className="btn btn-primary btn-block" onClick = {()=>onClick()}>Submit</button>
+                <button type="submit" className="btn btn-primary btn-block" >Submit</button>
                 
             </form>
             </div>

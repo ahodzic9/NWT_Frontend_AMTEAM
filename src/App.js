@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.js";
 import SignUp from "./components/signup.js";
+import Chat from "./components/chat.js";
 import Poc from "./components/poc.js";
 import InstruktorPocetna from './components/InstruktorPocetna/InstruktorPocetna';
 import Pocetna from './components/Pocetna/Pocetna';
@@ -40,6 +41,7 @@ function App() {
             <Route path="/poc" component={Poc} />
             <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
             <Route path="/profil" component={Profil} />
+            <Route path="/chat" component={Chat}/>
           </Switch>
        
     </div></Router>
