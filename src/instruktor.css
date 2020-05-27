@@ -1,0 +1,21 @@
+.datumOcjena{
+    width: 100%;
+}
+#instruktorKartica{
+    margin:auto;
+    margin-top: 2%;
+}
+.profilnaSlika{
+    width: 200px;
+    height: 200px;
+}
+#instruktorInfo{
+    text-align: left;
+}
+#ocjena{
+    font-weight: bold;
+    font-size: xxx-large;
+}
+.ocjene{
+    width: 100%;
+}

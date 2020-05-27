@@ -9,9 +9,9 @@ import Login from "./components/login.js";
 import SignUp from "./components/signup.js";
 import Chat from "./components/chat.js";
 import Poc from "./components/poc.js";
-import InstruktorPocetna from './components/InstruktorPocetna/InstruktorPocetna';
-import Pocetna from './components/Pocetna/Pocetna';
-import Profil from './components/profil/profil';
+//import Pocetna from './components/Pocetna/Pocetna';
+import Pocetna from './pocetna.js';
+import Profil from './profilInstruktor.js';
 
 function App() {
   return (<Router>
@@ -39,7 +39,6 @@ function App() {
             <Route path="/sign-up" component={SignUp} />
             <Route path="/pocetna" component={Pocetna} />
             <Route path="/poc" component={Poc} />
-            <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
             <Route path="/profil" component={Profil} />
             <Route path="/chat" component={Chat}/>
           </Switch>

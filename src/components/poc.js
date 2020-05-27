@@ -6,9 +6,9 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Chat from "./chat";
 import Login from "./login.js";
 import SignUp from "./signup.js";
-import InstruktorPocetna from './InstruktorPocetna/InstruktorPocetna';
-import Pocetna from './Pocetna/Pocetna';
-import Profil from './profil/profil';
+//import Pocetna from './Pocetna/Pocetna';
+import Pocetna from '../pocetna.js';
+import Profil from '../profilInstruktor.js';
 
 function App() {
   return (<Router>
@@ -36,7 +36,6 @@ function App() {
             
             <Route path="/pocetna" component={Pocetna} />
             <Route path="/chat" component={Chat}/>
-            <Route path="/instruktor-pocetna" component={InstruktorPocetna} />
             <Route path="/profil" component={Profil} />
           </Switch>
        

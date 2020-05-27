@@ -24,6 +24,11 @@ export default class Login extends Component {
     handleChangePassword(event) {
         this.setState({password: event.target.value});
     }
+
+    componentDidMount(){
+        localStorage.removeItem('currentUserRole');
+        localStorage.removeItem('currentUserId');
+    }
     
     onClick = event => {
         event.preventDefault();
