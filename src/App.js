@@ -12,6 +12,7 @@ import Poc from "./components/poc.js";
 //import Pocetna from './components/Pocetna/Pocetna';
 import Pocetna from './pocetna.js';
 import Profil from './profilInstruktor.js';
+import Home from './home.js'
 
 function App() {
   return (<Router>
@@ -41,6 +42,7 @@ function App() {
             <Route path="/poc" component={Poc} />
             <Route path="/profil" component={Profil} />
             <Route path="/chat" component={Chat}/>
+            <Route path="/home" component={Home}/>
           </Switch>
        
     </div></Router>

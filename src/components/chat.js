@@ -234,6 +234,9 @@ export default class Chat extends Component {
             <div className="container">
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">
+                <li className="nav-item">
+                    <Link className="nav-link" to={"/home"}>Home</Link>
+                  </li>
                   <li className="nav-item">
                     <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
                   </li>
