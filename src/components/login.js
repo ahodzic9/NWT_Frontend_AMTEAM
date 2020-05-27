@@ -34,7 +34,21 @@ export default class Login extends Component {
           };
         axios.post('http://localhost:8111/api/management/login', user ).then(function (response) {
             if(response.status == 200){
+                localStorage.removeItem('token');
                 localStorage.setItem('token', response.data.token);
+                axios.get('http://localhost:8111/api/management/whoAmI',{
+            headers: {
+              Authorization: response.data.token 
+            }}).then(res => {
+                console.log(res);
+                localStorage.removeItem('currentUserRole');
+                localStorage.removeItem('currentUserId');
+                localStorage.setItem('currentUserRole', res.data.userRole);
+                localStorage.setItem('currentUserId', res.data.userId);
+                })
+                .catch(error =>{
+                    alert(error);
+                })
                 window.location.replace("/poc");
             }
           })
@@ -42,7 +56,7 @@ export default class Login extends Component {
             alert(error);
             document.getElementById("pogresni_podaci").style.display = 'block';
           });
-          
+        
     }
     
     

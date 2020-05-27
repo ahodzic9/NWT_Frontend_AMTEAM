@@ -11,17 +11,25 @@ export default class Chat extends Component {
             listOfClients : null,
             listOfClientsNull : true,
             selectedClient : null,
-            isClientSelected: false
+            isClientSelected: false,
+            messageList: null,
+            isMessageListEmpty: true,
+            emptyMessageList: '',
+            writtenMessage: ''
         };
-        this.onClickClient = this.onClickClient.bind(this);
+        this.createClientList = this.createClientList.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onHover = this.onHover.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.createMessageList = this.createMessageList.bind(this);
+        this.handleChangeMessage = this.handleChangeMessage.bind(this);
     }
     componentDidMount(){
+        if(localStorage.getItem('currentUserRole')==2){
         axios.get('http://localhost:8111/api/management/clients',{
             headers: {
               Authorization: this.state.token 
             }}).then(res => {
-            console.log(res);
-            console.log(res.data);
             this.setState({listMessage : "List of all clients: ",
                             listOfClients : res.data})
                             
@@ -30,16 +38,12 @@ export default class Chat extends Component {
               alert(error);
           }
         )
-    }
-    onClickClient(){
-        console.log("Clicked on: "/*+item.id+" with name "+item.firstName*/);
-    
-        /*axios.get('http://localhost:8111/api/management/clients',{
+        }
+        else if(localStorage.getItem('currentUserRole')==3){
+            axios.get('http://localhost:8111/api/management/instructors',{
             headers: {
               Authorization: this.state.token 
             }}).then(res => {
-            console.log(res);
-            console.log(res.data);
             this.setState({listMessage : "List of all clients: ",
                             listOfClients : res.data})
                             
@@ -47,17 +51,186 @@ export default class Chat extends Component {
           }).catch( error =>{
               alert(error);
           }
-        )*/
-    };
+        )
+        }
+    }
+    handleChangeMessage(event) {
+        this.setState({writtenMessage: event.target.value});
+    }
+    onSubmit = event => {
+        event.preventDefault();
+        var message = {'message': this.state.writtenMessage,
+                        'sender': 'client'};
+        if(localStorage.getItem('currentUserRole') == 2){
+            message.sender = 'instructor';
+        axios.post('http://localhost:8111/api/messaging/message-instructor/'+localStorage.getItem('currentUserId')+'/'+this.state.selectedClient.id,
+                message, {headers: {
+                    Authorization: this.state.token 
+                  }}).then(res =>{
+            axios.get('http://localhost:8111/api/messaging/messages/'+localStorage.getItem('currentUserId')+'/'+this.state.selectedClient.id,{
+            headers: {
+              Authorization: this.state.token 
+            }}).then(res => {
+            this.setState({messageList:res.data});
+            this.setState({isMessageListEmpty: false});
+            }).catch( error =>{
+                //alert(error);
+                if(error.response.status == '404'){
+                    this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+                }
+            }
+          )
+        }).catch(error =>{
+            alert(error);
+        })
+    }else if(localStorage.getItem('currentUserRole') == 3){
+        message.sender = 'client';
+    axios.post('http://localhost:8111/api/messaging/message-client/'+this.state.selectedClient.id+'/'+localStorage.getItem('currentUserId'),
+            message, {headers: {
+                Authorization: this.state.token 
+              }}).then(res =>{
+        axios.get('http://localhost:8111/api/messaging/messages/'+this.state.selectedClient.id+'/'+localStorage.getItem('currentUserId'),{
+        headers: {
+          Authorization: this.state.token 
+        }}).then(res => {
+        this.setState({messageList:res.data});
+        this.setState({isMessageListEmpty: false});
+        }).catch( error =>{
+            //alert(error);
+            if(error.response.status == '404'){
+                this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+            }
+        }
+      )
+    }).catch(error =>{
+        alert(error);
+    })
+}
+
+        this.setState({writtenMessage:''})
+    }
+    onHover = event => {
+        event.target.style.backgroundColor = '#FFFFFF';
+    }   
+    onMouseLeave = event =>{
+        event.target.style.backgroundColor = '#F5F5F5';
+    }
+
+    createMessageList(item){
+        var styleLi = null;
+        var addMessage = "";
+        if(localStorage.getItem('currentUserRole') == 3){
+            if(item.sender === "instructor"){
+                
+                addMessage = this.state.selectedClient.firstName+" : "+item.message;        
+                styleLi = {
+                'listStyleType':'none',
+                'marginBottom':'10px',
+                'textAlign':'left',
+                'height':'30px',
+                'backgroundColor':'#F5F5F5',
+                'borderRadius':'15px',
+                'float':'left',
+                'width':'60%',
+                'padding':'5px'
+                };
+            }else{
+                addMessage =    item.message;
+                styleLi = {
+                    'listStyleType':'none',
+                    'marginBottom':'10px',
+                    'textAlign':'right',
+                    'height':'30px',
+                    'backgroundColor':'#F5F5F5',
+                    'borderRadius':'15px',
+                    'float':'right',
+                    'width':'60%',
+                    'padding':'6px'
     
+                };
+            }
+            return <li onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave} style={styleLi} key={item.id}>{addMessage}</li>
+        }else{
+            
+            if(item.sender === "instructor"){
+                addMessage = item.message;
+                styleLi = {
+                'listStyleType':'none',
+                'marginBottom':'10px',
+                'textAlign':'left',
+                'height':'30px',
+                'backgroundColor':'#F5F5F5',
+                'borderRadius':'15px',
+                'float':'left',
+                'width':'60%',
+                'padding':'5px'
+                };
+            }else{
+                addMessage = item.message+" : "+this.state.selectedClient.firstName;
+                styleLi = {
+                    'listStyleType':'none',
+                    'marginBottom':'10px',
+                    'textAlign':'right',
+                    'height':'30px',
+                    'backgroundColor':'#F5F5F5',
+                    'borderRadius':'15px',
+                    'float':'right',
+                    'width':'60%',
+                    'padding':'6px'
+    
+                };
+            }
+            return <li onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave} style={styleLi} key={item.id}>{addMessage}</li>
+        }
+        
+    }
+
     createClientList(item){
-        return <li onClick={()=>{alert("Selected user is: " + item.firstName)}} key={item.id}>{item.firstName}</li>
+        var styleLi = null;
+        if(item.sender === "instructor"){
+            styleLi = {
+            'listStyleType':'none',
+            'marginBottom':'10px',
+            'textAlign':'center',
+            'height':'30px',
+            'backgroundColor':'#F5F5F5',
+            'borderRadius':'15px'
+            }
+        }else{
+            styleLi = {
+                'listStyleType':'none',
+                'marginBottom':'10px',
+                'textAlign':'center',
+                'height':'30px',
+                'backgroundColor':'#F5F5F5',
+                'borderRadius':'15px'
+            }
+        }
+        return <li onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave} style={styleLi} onClick={()=>{
+            this.setState({isClientSelected:true, selectedClient:item})
+            
+            axios.get('http://localhost:8111/api/messaging/messages/'+localStorage.getItem('currentUserId')+'/'+item.id,{
+            headers: {
+              Authorization: this.state.token 
+            }}).then(res => {
+            this.setState({messageList:res.data});
+            this.setState({isMessageListEmpty: false});
+            }).catch( error =>{
+                //alert(error);
+                if(error.response.status == '404'){
+                    this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+                }
+            }
+          )
+        }} key={item.id}>{item.firstName}</li>
     }
     render() {
         if(!this.state.listOfClientsNull)
         var CL = this.state.listOfClients.map(this.createClientList);
+        if(this.state.messageList!=null)
+        var CM = this.state.messageList.map(this.createMessageList);
         return (
-            <div><nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <div style={{'height':'100%'}}><nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
             <div className="container">
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">
@@ -74,17 +247,26 @@ export default class Chat extends Component {
               </div>
             </div>
           </nav>
-        <div id="chatRoom">
-            <div id="list" style={{'float':'left', 'width':"20%"}}>
-        <p id="defaultMessageList" style={{'marginTop':'20px'}}>{this.state.listMessage}</p>
+        <div id="chatRoom" style={{'height':'100%'}}>
+            <div id="list" style={{'float':'left', 'width':"20%",'height':'100%'}}>
+        <p id="defaultMessageList" style={{'marginTop':'20px','marginLeft':'10%'}}>{this.state.listMessage}</p>
         {this.state.listOfClientsNull ? null :
-        <ul>{CL}</ul>}
+        <ul style={{'backgroundColor':'#E8E8E8','marginLeft':'70px','widht':'40%','height':'100%','borderRadius':'5px','padding':'20px'}}>{CL}</ul>}
             </div>
             <div id="chat" style={{'float':'right', 'width':"70%"}}>
                 {!this.state.isClientSelected ? <p id="defaultMessageChat" style={{'marginTop':'20px'}}>{this.state.chatMessage}</p>
-                : <div>
-                    <p>Chat with {this.state.selectedClient.firstName}</p>    
+                : <div >
+                    <p>Chat with {this.state.selectedClient.firstName}</p>
+                    <form onSubmit={this.onSubmit}>
+                        <input onChange={this.handleChangeMessage} value={this.state.writtenMessage} type='text' style={{'width':'80%', 'borderRadius':'5px', 'marginRight':'5px','padding':'5px'}} placeholder='Type something'/>
+                        <input type='submit' style={{'borderRadius':'2px'}} text='send' value='send'/>      
+                    </form>  
+                    {this.state.isMessageListEmpty ? <p id="defaultMessageChat" style={{'marginTop':'20px'}}>{this.state.emptyMessageList}</p>
+                : <div >
+                    <ul style={{'height':'100%','borderRadius':'5px','padding':'20px'}}>{CM}</ul>
                 </div>}
+                </div>}
+        
             </div>
         </div>
         </div>
