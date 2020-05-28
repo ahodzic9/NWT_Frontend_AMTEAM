@@ -11,6 +11,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
+import Modal from 'react-modal';
 
 export default class Instruktor extends Component {
     constructor(props) {
@@ -25,9 +26,19 @@ export default class Instruktor extends Component {
             registrationDate:'',
             numberOfScheduledInstructions:0,
             subjects : null,
-            grades : null
+            grades : null,
+            modalOpened: false,
+            selectedSubject: null,
+            selectedSubjectMessage: "Izaberite predmet",
+            selectedDate: null,
+            selectedNumberOfClasses: 0
         };
         this.createGradeList = this.createGradeList.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);       
+        this.createSubjectList2 = this.createSubjectList2.bind(this);
+        this.handleDateChange =  this.handleDateChange.bind(this);
+        this.handleNumberOfClasses = this.handleNumberOfClasses.bind(this);
+        this.handleOnSubmit = this.handleOnSubmit.bind(this);
       }
 
     
@@ -60,25 +71,69 @@ export default class Instruktor extends Component {
     createSubjectList(item){
         return <ListGroupItem key={item.id}>{item.name}: {item.description}
             </ListGroupItem>
-    }
+    }    
     createGradeList(item){
         return <Dropdown.Item key={item.id} href="#">
             Ocjena: {item.grade},    Komentar: {item.comment}
             </Dropdown.Item>
     }
+    createSubjectList2(item){
+        return <ListGroupItem key={item.id} onClick={this.selectSubject.bind(this,item)}>{item.name}: {item.description} 
+        </ListGroupItem>
+    }
+
+    selectSubject(item){
+                this.setState({selectedSubject: item.id, selectedSubjectMessage: item.name + " " + item.description});                
+    }
+
+    toggleModal() {
+        this.setState(prevState => ({ modalOpened: !prevState.modalOpened }));
+      }
+
+    handleDateChange(event){
+        this.setState({selectedDate: event.target.value});
+    }
+
+    handleNumberOfClasses(event){
+        this.setState({selectedNumberOfClasses: event.target.value});
+    }
+
+    handleOnSubmit(event){
+        event.preventDefault();
+        var instructionRequest = {
+            "scheduledDate": this.state.selectedDate,
+	        "numberOfClasses": this.state.selectedNumberOfClasses
+          };
+          console.log(this.state.selectedDate +" " + this.state.selectedSubject);
+        if(this.state.selectedDate != null && this.state.selectedNumberOfClasses!=0){
+                axios.post('http://localhost:8111/api/request/instruction/'+this.props.id + '/' + localStorage.getItem("currentUserId") +'/'+ this.state.selectedSubject,
+                 instructionRequest, {
+                    headers: {
+                      Authorization: this.state.token
+                    }});
+
+        }
+
+    }
+
+
     
     render() {
-        if(this.state.subjects != null)
+        if(this.state.subjects != null){            
             var SL = this.state.subjects.map(this.createSubjectList);
+            var SL2= this.state.subjects.map(this.createSubjectList2);
+        }
         if(this.state.grades != null)
             var GL = this.state.grades.map(this.createGradeList);
+        
 
         const onClick = () => {
             
         }
 
         return (
-            <Card id="instruktorKartica" style={{ width: '80%' }}>
+            <div>
+                <Card id="instruktorKartica" style={{ width: '80%' }}>
                 <table class="datumOcjena">
                     <tr>
                         <td><Card.Img class="profilnaSlika" variant="top" src="profile.jpg" /></td>
@@ -115,7 +170,7 @@ export default class Instruktor extends Component {
                             </td>
                             <td>
                                 <Card.Body>
-                                    <Button variant="primary">Zakaži instrukciju</Button>
+                                    <Button variant="primary" onClick={this.toggleModal}>Zakaži instrukciju</Button>
                                 </Card.Body>
                             </td>
                             
@@ -124,6 +179,25 @@ export default class Instruktor extends Component {
                     
                 
             </Card>
+            <Modal isOpen={this.state.modalOpened} onRequestClose={this.toggleModal} contentLabel="Zakazi instrukciju"  style={{"width": "250px", "height" : "250px"}} onSubmit="">   
+           <form onSubmit={this.handleOnSubmit}>
+                <label>Datum instrukcije:</label><input type="date" onChange = {this.handleDateChange}></input>
+                <label>Broj casova:</label>  <input type="number" onChange = {this.handleNumberOfClasses}></input>   
+                <button type="submit">Zakazi instrukciju</button> 
+                <Dropdown>
+                <Dropdown.Toggle variant="info" id="dropdown-basic">
+                                        {this.state.selectedSubjectMessage}
+                                        </Dropdown.Toggle>
+                <Dropdown.Menu class="predmeti">
+                                            {SL2}
+                </Dropdown.Menu>
+                </Dropdown>
+           </form>
+               
+           
+          </Modal>
+            </div>
+            
         );
     }
 }

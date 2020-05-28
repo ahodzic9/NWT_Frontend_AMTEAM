@@ -28,6 +28,7 @@ export default class Login extends Component {
     componentDidMount(){
         localStorage.removeItem('currentUserRole');
         localStorage.removeItem('currentUserId');
+        localStorage.removeItem('token');
     }
     
     onClick = event => {
@@ -39,15 +40,14 @@ export default class Login extends Component {
           };
         axios.post('http://localhost:8111/api/management/login', user ).then(function (response) {
             if(response.status == 200){
-                localStorage.removeItem('token');
+                
                 localStorage.setItem('token', response.data.token);
                 axios.get('http://localhost:8111/api/management/whoAmI',{
             headers: {
               Authorization: response.data.token 
             }}).then(res => {
+                alert(res);
                 console.log(res);
-                localStorage.removeItem('currentUserRole');
-                localStorage.removeItem('currentUserId');
                 localStorage.setItem('currentUserRole', res.data.userRole);
                 localStorage.setItem('currentUserId', res.data.userId);
                 })
