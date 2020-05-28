@@ -2,8 +2,9 @@ import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Instruktor from './instruktor.js';
+import './pocetna.css';
 
-export default class Chat extends Component {
+export default class Pocetna extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -101,7 +102,7 @@ export default class Chat extends Component {
         <div id="chatRoom">
             <div id="list">
         {this.state.listOfInstructorsNull ? null :
-        <ul >{IL}</ul>}
+        <ul class = "listaKartica">{IL}</ul>}
             </div>
             
             </div>

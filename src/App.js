@@ -11,7 +11,9 @@ import Chat from "./components/chat.js";
 import Poc from "./components/poc.js";
 //import Pocetna from './components/Pocetna/Pocetna';
 import Pocetna from './pocetna.js';
-import Profil from './profilInstruktor.js';
+import ProfilInstruktor from './profilInstruktor.js';
+import ProfilKlijent from './profilKlijent.js';
+import Profil from './profil.js';
 import Home from './home.js'
 
 function App() {

@@ -54,7 +54,7 @@ export default class Login extends Component {
                 .catch(error =>{
                     alert(error);
                 })
-                window.location.replace("/poc");
+                window.location.replace("/home");
             }
           })
           .catch(function (error) {

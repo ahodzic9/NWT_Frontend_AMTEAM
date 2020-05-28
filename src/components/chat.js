@@ -241,7 +241,10 @@ export default class Chat extends Component {
                     <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
                   </li>
                   <li className="nav-item">
+                  
                     <Link className="nav-link" to={"/profil"}>Profil</Link>
+                   
+                    
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to={"/chat"}>Chat</Link>

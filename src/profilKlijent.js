@@ -15,7 +15,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 
-export default class ProfilInstruktor extends Component {
+export default class ProfilKlijent extends Component {
     constructor(props) {
         super();
         this.state = {
@@ -23,15 +23,10 @@ export default class ProfilInstruktor extends Component {
             id : '',
             firstName:'',
             lastName:'',
-            avgGrade:1,
-            description:'',
-            registrationDate:'',
-            numberOfScheduledInstructions:0,
-            subjects : null,
-            grades : null,
-            userName:''
+            userName:'',
+            registrationDate:''
         };
-        this.createGradeList = this.createGradeList.bind(this);
+        
       }
 
     
@@ -43,21 +38,15 @@ export default class ProfilInstruktor extends Component {
         this.setState({id:this.props.id});
 
         
-        axios.get('http://localhost:8111/api/management/instructor/'+this.props.id,{
+        axios.get('http://localhost:8111/api/management/client/'+this.props.id,{
             headers: {
               Authorization: this.state.token 
             }}).then(res => {
             this.setState({
                 firstName : res.data.firstName,
                 lastName:res.data.lastName,
-                avgGrade:res.data.avgGrade,
-                description:res.data.description,
-                registrationDate:res.data.registrationDate,
-                numberOfScheduledInstructions:res.data.numberOfScheduledInstructions,
-                subjects : res.data.subjects,
-                userName : res.data.userName,
-                maxNumberOfInstructions : res.data.maxNumberOfInstructions,
-                numberOfScheduledInstructions : res.data.numberOfScheduledInstructions
+                userName:res.data.userName,
+                registrationDate:res.data.registrationDate
             })
 
           }).catch( error =>{
@@ -65,32 +54,13 @@ export default class ProfilInstruktor extends Component {
           }
         );
 
-        axios.get('http://localhost:8111/api/rating/grades-instructor-all/'+this.props.id,{
-            headers: {
-              Authorization: this.state.token 
-            }}).then(res => {
-            this.setState({grades : res.data})
-
-          }).catch( error =>{
-              
-          }
-        );
-    }
-    createSubjectList(item){
-        return <ListGroupItem key={item.id}>{item.name}: {item.description}
-            </ListGroupItem>
-    }
-    createGradeList(item){
-        return <ListGroupItem key={item.id}>
-            Ocjena: {item.grade},    Komentar: {item.comment}
-            </ListGroupItem>
+        
+        
     }
     
+    
     render() {
-        if(this.state.subjects != null)
-            var SL = this.state.subjects.map(this.createSubjectList);
-        if(this.state.grades != null)
-            var GL = this.state.grades.map(this.createGradeList);
+        
 
         const onClick = () => {
             
@@ -122,38 +92,18 @@ export default class ProfilInstruktor extends Component {
             <Card id="instruktorKartica" style={{ width: '80%' }}>
                 <table class="datumOcjena">
                     <tr>
-                        <td><Card.Img class="profilnaSlika" variant="top" src="profile.jpg" /></td>
+                        <td><Card.Img class="profilnaSlika" variant="top" src="client.png" style={{width:'170px',height:'170px'}} /></td>
                         <td><Card.Body id="instruktorInfo">
                             <Card.Title>Korisničko ime: {this.state.userName}</Card.Title>
                             <Card.Text id="naslov">Ime: {this.state.firstName}</Card.Text>
                             <Card.Text id="naslov">Prezime: {this.state.lastName}</Card.Text>
-                            <Card.Text id="asda">Opis: {this.state.description}</Card.Text>
                             <Card.Text>Datum prijave: {this.state.registrationDate}</Card.Text>
-                            <Card.Text>Maksimalan broj instrukcija: {this.state.maxNumberOfInstructions}</Card.Text>
-                            <Card.Text>Broj zakazanih instrukcija: {this.state.numberOfScheduledInstructions}</Card.Text>
                             </Card.Body>
                         </td>
-                        <td>
-                            <table>
-                                <tr id="ocjena">{this.state.avgGrade}</tr>
-                                <tr><Card.Text>Prosječna ocjena</Card.Text></tr>
-                            </table>
-                        </td>
+                        
                     </tr>
                 </table>
 
-                
-                <Card.Text class="lijevo">Predmeti</Card.Text>
-                    <ListGroup className="list-group-flush">
-                        {SL}
-                    </ListGroup>
-
-                <Card.Text class="lijevo">Ocjene</Card.Text>
-                    <ListGroup className="list-group-flush">
-                        {GL}
-                    </ListGroup>
-                           
-                
             </Card>
             </li>
             <li>
@@ -167,8 +117,8 @@ export default class ProfilInstruktor extends Component {
             </Card>
               </li></ul>
             <Instrukcije 
-            idInstruktora = {this.props.id} 
-            idKlijenta = {null}
+            idInstruktora = {null}
+            idKlijenta = {this.props.id}
             ></Instrukcije>
             </div>
         );
