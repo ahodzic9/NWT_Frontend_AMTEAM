@@ -19,7 +19,14 @@
 .ocjene{
     width: 100%;
 }
-.modal {
-    width: 250px;
-    height: 250px;
+.custom-dialog {
+    position: absolute;
+    background-color: lightblue;
+    left: 50%;
+    margin-left: -200px;
+    top: 50%;
+    margin-top: -150px;
+    padding:20px;
+    width:500px !important;
+    height: 300px;
 }

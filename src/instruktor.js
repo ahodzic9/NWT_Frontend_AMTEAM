@@ -39,6 +39,7 @@ export default class Instruktor extends Component {
         this.handleDateChange =  this.handleDateChange.bind(this);
         this.handleNumberOfClasses = this.handleNumberOfClasses.bind(this);
         this.handleOnSubmit = this.handleOnSubmit.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
       }
 
     
@@ -55,7 +56,7 @@ export default class Instruktor extends Component {
         this.setState({registrationDate:this.props.registrationDate});
         this.setState({numberOfScheduledInstructions:this.props.numberOfScheduledInstructions});
         this.setState({subjects:this.props.subjects});
-
+        
         
         axios.get('http://localhost:8111/api/rating/grades-instructor-all/'+this.props.id,{
             headers: {
@@ -87,8 +88,12 @@ export default class Instruktor extends Component {
     }
 
     toggleModal() {
-        this.setState(prevState => ({ modalOpened: !prevState.modalOpened }));
+        this.setState({ modalOpened: true });
       }
+
+     handleCloseModal () {
+        this.setState({ modalOpened: false});
+    }
 
     handleDateChange(event){
         this.setState({selectedDate: event.target.value});
@@ -101,7 +106,7 @@ export default class Instruktor extends Component {
     handleOnSubmit(event){
         event.preventDefault();
         var instructionRequest = {
-            "scheduledDate": this.state.selectedDate,
+            "scheduledDate": "2020-09-16T23:24:08.212-00:00",
 	        "numberOfClasses": this.state.selectedNumberOfClasses
           };
           console.log(this.state.selectedDate +" " + this.state.selectedSubject);
@@ -109,10 +114,11 @@ export default class Instruktor extends Component {
                 axios.post('http://localhost:8111/api/request/instruction/'+this.props.id + '/' + localStorage.getItem("currentUserId") +'/'+ this.state.selectedSubject,
                  instructionRequest, {
                     headers: {
-                      Authorization: this.state.token
-                    }});
+                        Authorization: this.state.token 
+                      }});
 
         }
+
 
     }
 
@@ -179,12 +185,13 @@ export default class Instruktor extends Component {
                     
                 
             </Card>
-            <Modal isOpen={this.state.modalOpened} onRequestClose={this.toggleModal} contentLabel="Zakazi instrukciju"  style={{"width": "250px", "height" : "250px"}} onSubmit="">   
-           <form onSubmit={this.handleOnSubmit}>
-                <label>Datum instrukcije:</label><input type="date" onChange = {this.handleDateChange}></input>
-                <label>Broj casova:</label>  <input type="number" onChange = {this.handleNumberOfClasses}></input>   
-                <button type="submit">Zakazi instrukciju</button> 
-                <Dropdown>
+            <Modal isOpen={this.state.modalOpened} contentLabel="Zakazi instrukciju" className='custom-dialog'>   
+            
+           <form onSubmit={this.handleOnSubmit} style = {{'display' :' flex', 'flex-direction': 'column', 'justify-content': 'center', 'align-items':'center'}} >
+                <label>Datum instrukcije:</label><input type="date" onChange = {this.handleDateChange} style = {{'width': '250px'}}></input>
+                <label>Broj casova:</label>  <input type="number" onChange = {this.handleNumberOfClasses} style = {{'width': '250px'}}></input>   
+               
+                <Dropdown style ={{'margin-top' : '20px', 'margin-bottom': '20px'}}>
                 <Dropdown.Toggle variant="info" id="dropdown-basic">
                                         {this.state.selectedSubjectMessage}
                                         </Dropdown.Toggle>
@@ -192,6 +199,12 @@ export default class Instruktor extends Component {
                                             {SL2}
                 </Dropdown.Menu>
                 </Dropdown>
+                <div style={{'display':'flex', 'flex-direction':'row', 'justify-content':'space-around'}}>
+                    <button type="submit" class="btn btn-primary" style = {{'width': '160px', 'margin-right': '20px'}}>Zakazi instrukciju</button>   
+                    <button class="btn btn-info" onClick={this.handleCloseModal}>Zatvori</button>       
+                </div>
+                
+       
            </form>
                
            
