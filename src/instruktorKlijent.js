@@ -1,6 +1,6 @@
 import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
-import './instruktor.css'
+import './instruktorKlijent.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import Card from "react-bootstrap/Card";
@@ -12,9 +12,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import Modal from 'react-modal';
-import { Input } from "@material-ui/core";
 
-export default class Instruktor extends Component {
+export default class InstruktorKlijent extends Component {
     constructor(props) {
         super();
         this.state = {
@@ -116,11 +115,12 @@ export default class Instruktor extends Component {
                  instructionRequest, {
                     headers: {
                         Authorization: this.state.token 
-                      }}).then(res => {
-                            this.setState({ modalOpened: false});
-                      }).catch(err =>{
-                          alert(err);
-                      });
+                    }}).then(res => {
+                        this.setState({ modalOpened: false});
+                  }).catch(err =>{
+                      alert("Instruktor nema raspoloživ uneseni broj časova!");
+                  });
+
         }
 
 
@@ -178,7 +178,11 @@ export default class Instruktor extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </td>
-                            
+                            <td>
+                                <Card.Body>
+                                    <Button variant="primary" onClick={this.toggleModal}>Zakaži instrukciju</Button>
+                                </Card.Body>
+                            </td>
                             
                         </tr>
                     </table>
@@ -186,8 +190,10 @@ export default class Instruktor extends Component {
                 
             </Card>
             <Modal isOpen={this.state.modalOpened} contentLabel="Zakazi instrukciju" className='custom-dialog'>   
+
             
            <form onSubmit={this.handleOnSubmit} style = {{'display' :' flex', 'flex-direction': 'column', 'justify-content': 'center', 'align-items':'center'}} >
+                
                 <label>Datum instrukcije:</label><input type="date" onChange = {this.handleDateChange} style = {{'width': '250px'}}></input>
                 <label>Broj casova:</label>  <input type="number" onChange = {this.handleNumberOfClasses} style = {{'width': '250px'}}></input>   
                
@@ -200,7 +206,7 @@ export default class Instruktor extends Component {
                 </Dropdown.Menu>
                 </Dropdown>
                 <div style={{'display':'flex', 'flex-direction':'row', 'justify-content':'space-around'}}>
-                    <input type="submit" class="btn btn-primary" style = {{'width': '160px', 'margin-right': '20px'}}>Zakazi instrukciju</input>   
+                    <button type="submit" class="btn btn-primary" style = {{'width': '160px', 'margin-right': '20px'}}>Zakazi instrukciju</button>   
                     <button class="btn btn-info" onClick={this.handleCloseModal}>Zatvori</button>       
                 </div>
                 

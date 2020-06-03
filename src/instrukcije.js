@@ -18,7 +18,7 @@ export default class Instrukcije extends Component {
         this.onMouseLeave = this.onMouseLeave.bind(this);
     }
     componentDidMount(){
-        if(this.props.idInstruktora){
+        if(this.props.idInstruktora != null){
             axios.get('http://localhost:8111/api/request/instructions/'+this.props.idInstruktora,{
                 headers: {
                 Authorization: this.state.token 

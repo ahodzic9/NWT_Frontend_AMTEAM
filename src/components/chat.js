@@ -15,7 +15,8 @@ export default class Chat extends Component {
             messageList: null,
             isMessageListEmpty: true,
             emptyMessageList: '',
-            writtenMessage: ''
+            writtenMessage: '',
+            time: Date.now()
         };
         this.createClientList = this.createClientList.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -23,8 +24,13 @@ export default class Chat extends Component {
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.createMessageList = this.createMessageList.bind(this);
         this.handleChangeMessage = this.handleChangeMessage.bind(this);
+        this.callEverySec = this.callEverySec.bind(this);
     }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+      }
     componentDidMount(){
+        this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
         if(localStorage.getItem('currentUserRole')==2){
         axios.get('http://localhost:8111/api/management/clients',{
             headers: {
@@ -121,7 +127,6 @@ export default class Chat extends Component {
         var addMessage = "";
         if(localStorage.getItem('currentUserRole') == 3){
             if(item.sender === "instructor"){
-                
                 addMessage = this.state.selectedClient.firstName+" : "+item.message;        
                 styleLi = {
                 'listStyleType':'none',
@@ -151,7 +156,6 @@ export default class Chat extends Component {
             }
             return <li onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave} style={styleLi} key={item.id}>{addMessage}</li>
         }else{
-            
             if(item.sender === "instructor"){
                 addMessage = item.message;
                 styleLi = {
@@ -184,7 +188,9 @@ export default class Chat extends Component {
         }
         
     }
-
+    callEverySec(e){
+        
+    }
     createClientList(item){
         var styleLi = null;
         if(item.sender === "instructor"){
@@ -209,22 +215,66 @@ export default class Chat extends Component {
         return <li onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave} style={styleLi} onClick={()=>{
             this.setState({isClientSelected:true, selectedClient:item})
             
-            axios.get('http://localhost:8111/api/messaging/messages/'+localStorage.getItem('currentUserId')+'/'+item.id,{
+            if(localStorage.getItem("currentUserRole")==2){
+                axios.get('http://localhost:8111/api/messaging/messages/'+localStorage.getItem('currentUserId')+'/'+item.id,{
+                headers: {
+                  Authorization: this.state.token 
+                }}).then(res => {
+                this.setState({messageList:res.data});
+                this.setState({isMessageListEmpty: false});
+                }).catch( error =>{
+                    if(error.response.status == '404'){
+                        this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+                    }
+                }
+              )
+            }else{
+            axios.get('http://localhost:8111/api/messaging/messages/'+item.id+'/'+localStorage.getItem('currentUserId'),{
+                headers: {
+                  Authorization: this.state.token 
+                }}).then(res => {
+                this.setState({messageList:res.data});
+                this.setState({isMessageListEmpty: false});
+                }).catch( error =>{
+                    if(error.response.status == '404'){
+                        this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+                    }
+                }
+              )
+            }
+        }} key={item.id}>{item.firstName}</li>
+    }
+    render() {
+        if(this.state.selectedClient!==null && (this.state.time/1000)%9< 1){
+            if(localStorage.getItem("currentUserRole")==2){
+            axios.get('http://localhost:8111/api/messaging/messages/'+localStorage.getItem('currentUserId')+'/'+this.state.selectedClient.id,{
             headers: {
               Authorization: this.state.token 
             }}).then(res => {
             this.setState({messageList:res.data});
             this.setState({isMessageListEmpty: false});
             }).catch( error =>{
-                //alert(error);
                 if(error.response.status == '404'){
                     this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
                 }
             }
           )
-        }} key={item.id}>{item.firstName}</li>
+        }else{
+        axios.get('http://localhost:8111/api/messaging/messages/'+this.state.selectedClient.id+'/'+localStorage.getItem('currentUserId'),{
+            headers: {
+              Authorization: this.state.token 
+            }}).then(res => {
+            this.setState({messageList:res.data});
+            this.setState({isMessageListEmpty: false});
+            }).catch( error =>{
+                if(error.response.status == '404'){
+                    this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
+                }
+            }
+          )
+        }
     }
-    render() {
+    
         if(!this.state.listOfClientsNull)
         var CL = this.state.listOfClients.map(this.createClientList);
         if(this.state.messageList!=null)
@@ -241,18 +291,22 @@ export default class Chat extends Component {
                     <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
                   </li>
                   <li className="nav-item">
-                  
+                    <Link className="nav-link" to={"/pocetnaKurs"}>Kursevi</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link" to={"/profil"}>Profil</Link>
-                   
-                    
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to={"/chat"}>Chat</Link>
                   </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to={"/"}>Log Out</Link>
+                    </li>
                 </ul>
               </div>
             </div>
           </nav>
+          
         <div id="chatRoom" style={{'height':'100%'}}>
             <div id="list" style={{'float':'left', 'width':"20%",'height':'100%'}}>
         <p id="defaultMessageList" style={{'marginTop':'20px','marginLeft':'10%'}}>{this.state.listMessage}</p>
@@ -266,14 +320,18 @@ export default class Chat extends Component {
                     <form onSubmit={this.onSubmit}>
                         <input onChange={this.handleChangeMessage} value={this.state.writtenMessage} type='text' style={{'width':'80%', 'borderRadius':'5px', 'marginRight':'5px','padding':'5px'}} placeholder='Type something'/>
                         <input type='submit' style={{'borderRadius':'2px'}} text='send' value='send'/>      
-                    </form>  
+                    </form>
+                    <div style={{"overflowY":"scroll", "height":"450px", }}>  
                     {this.state.isMessageListEmpty ? <p id="defaultMessageChat" style={{'marginTop':'20px'}}>{this.state.emptyMessageList}</p>
+                    
                 : <div >
                     <ul style={{'height':'100%','borderRadius':'5px','padding':'20px'}}>{CM}</ul>
-                </div>}
+                </div>
+                }</div>
                 </div>}
         
             </div>
+
         </div>
         </div>
         );

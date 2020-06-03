@@ -1,11 +1,11 @@
 import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Instruktor from './instruktor.js';
+import InstruktorAdmin from './instruktorAdmin.js';
 import InstruktorKlijent from './instruktorKlijent.js';
-import './pocetna.css';
+import './adminPanel.css';
 
-export default class Pocetna extends Component {
+export default class AdminPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,7 +50,6 @@ export default class Pocetna extends Component {
               alert(error);
           }
         );
-
         
     }
     
@@ -63,54 +62,42 @@ export default class Pocetna extends Component {
     }
 
     createInstructorList(item){
-      if(localStorage.getItem('currentUserRole')=="3"){
-        return <li key={item.id}><InstruktorKlijent 
+      
+        return <li key={item.id}><InstruktorAdmin
         id = {item.id}
         firstName = {item.firstName}
         lastName = {item.lastName}
         avgGrade = {item.avgGrade}
         description = {item.description}
         registrationDate = {item.registrationDate}
+        maxNumberOfInstructions ={item.maxNumberOfInstructions}
         numberOfScheduledInstructions = {item.numberOfScheduledInstructions}
         subjects = {item.subjects}
         >
-            </InstruktorKlijent></li>
-      }
-      else{
-        return <li key={item.id}><Instruktor 
-        id = {item.id}
-        firstName = {item.firstName}
-        lastName = {item.lastName}
-        avgGrade = {item.avgGrade}
-        description = {item.description}
-        registrationDate = {item.registrationDate}
-        numberOfScheduledInstructions = {item.numberOfScheduledInstructions}
-        subjects = {item.subjects}
-        >
-            </Instruktor></li>
-      }
+            </InstruktorAdmin></li>
+      
     }
+
     render() {
         if(!this.state.listOfInstructorsNull)
         var IL = this.state.listOfInstructors.map(this.createInstructorList);
-        
+
         return (
-            <div style={{'height':'100%'}}><nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <div style={{'height':'100%'}}>
+                <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
             <div className="container">
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                    <Link className="nav-link" to={"/home"}>Home</Link>
+                    <Link className="nav-link" to={"/homeAdmin"}>Home</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to={"/adminPanel"}>Upravljanje</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
+                    <Link className="nav-link" to={"/statistike"}>Statistike</Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={"/profil"}>Profil</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={"/chat"}>Chat</Link>
-                  </li>
+                        
                         <li className="nav-item">
                             <Link className="nav-link" to={"/"}>Log Out</Link>
                         </li>

@@ -46,19 +46,21 @@ export default class Login extends Component {
             headers: {
               Authorization: response.data.token 
             }}).then(res => {
-                alert(res);
-                console.log(res);
                 localStorage.setItem('currentUserRole', res.data.userRole);
                 localStorage.setItem('currentUserId', res.data.userId);
+                if(res.data.userRole=="1")
+                    window.location.replace("/homeAdmin");
+                else if(res.data.userRole=="2" || res.data.userRole=="3")
+                    window.location.replace("/home");
                 })
                 .catch(error =>{
                     alert(error);
                 })
-                window.location.replace("/home");
+                
+                
             }
           })
           .catch(function (error) {
-            alert(error);
             document.getElementById("pogresni_podaci").style.display = 'block';
           });
         

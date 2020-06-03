@@ -13,7 +13,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 
-export default class Home extends Component {
+export default class HomeAdmin extends Component {
     constructor(props) {
         super(props);
     }
@@ -29,6 +29,7 @@ export default class Home extends Component {
                     alert(error);
                 })
     }
+    
     render() {
         
 
@@ -39,16 +40,13 @@ export default class Home extends Component {
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                         <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <Link className="nav-link" to={"/home"}>Home</Link>
+                            <Link className="nav-link" to={"/homeAdmin"}>Home</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to={"/pocetna"}>Instruktori</Link>
+                            <Link className="nav-link" to={"/adminPanel"}>Upravljanje</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to={"/profil"}>Profil</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to={"/chat"}>Chat</Link>
+                            <Link className="nav-link" to={"/statistike"}>Statistike</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to={"/"}>Log Out</Link>

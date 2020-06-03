@@ -4,7 +4,7 @@ import './instruktor.css'
 import './profilInstruktor.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Instrukcije from './instrukcije.js'
+import Instrukcije from './instrukcije.js';
 
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -84,6 +84,9 @@ export default class ProfilKlijent extends Component {
                   <li className="nav-item">
                     <Link className="nav-link" to={"/chat"}>Chat</Link>
                   </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to={"/"}>Log Out</Link>
+                        </li>
                 </ul>
               </div>
             </div>
