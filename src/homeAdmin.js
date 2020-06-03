@@ -1,6 +1,6 @@
 import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
-import './home.css'
+import './homeAdmin.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
@@ -61,18 +61,15 @@ export default class HomeAdmin extends Component {
                 <table id="tabela1">
                     <tr>
                         <td>
-                            <p id="znanje">Ono što mi znamo je samo jedna kap, ono što ne znamo je okean!</p>
-                            <p class="tekst">Nauči uz našu pomoć, uz veliki izbor instruktora koji imaju iskustva. Zakaži privatnu intrukciju ili se uključi na jedan od velikog izbora kurseva.</p>
+                            <p id="znanje">Upravljanje</p>
                         </td>
-                        <td><img src="slika2.jpg" /></td>
+                        <td><img id="adminSlika" src="adminLogo.png" /></td>
                     </tr>
                     <tr>
-                        <td><img id="slika1" src="slika1.jpg" /></td>
                         <td>
-                            <p id="znanje">Dogovori online sesiju sa instruktorom</p>
-                            <p class="tekst">Iskoristi mogućnost dopisivanja sa instruktorima i drugim studentima, stekni nove 
-                            prijatelje, dogovaraj časove i pohađaj kurseve online.</p>
+                            <p id="znanje">Statistike</p>
                         </td>
+                        <td><img id="statistikeSlika" src="statistikeLogo.png" /></td>
                         
                     </tr>
                 </table>
