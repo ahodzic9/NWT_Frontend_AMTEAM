@@ -1,6 +1,6 @@
 import React, { Component, useImperativeHandle } from "react";
 import { useHistory } from 'react-router-dom';
-import SignUp from "../components/signup.js";
+import SignUp from "../SignUp/signup.js";
 import  './login.css';
 import axios from 'axios';
 

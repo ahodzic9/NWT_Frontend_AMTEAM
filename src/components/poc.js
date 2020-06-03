@@ -5,7 +5,7 @@ import '../App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Chat from "./chat";
 import Login from "./login.js";
-import SignUp from "./signup.js";
+import SignUp from "../SignUp/signup.js";
 //import Pocetna from './Pocetna/Pocetna';
 import Pocetna from '../pocetna.js';
 import Profil from '../profilInstruktor.js';

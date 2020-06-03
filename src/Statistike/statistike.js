@@ -1,8 +1,8 @@
 import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
-import './instruktor.css'
+import '../instruktor.css'
 import './statistike.css'
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Card from "react-bootstrap/Card";
@@ -24,7 +24,8 @@ export default class Statistike extends Component {
             colors:["yellow","green"],
             listOfStats:null,
             listTop5:null,
-            rank:1
+            rank:1,
+            listOfTop5BasedOnInstructions: null,
         };
         this.createDataPointsForInstructionsBySubject = this.createDataPointsForInstructionsBySubject.bind(this);
         this.createStats = this.createStats.bind(this);
@@ -90,7 +91,17 @@ export default class Statistike extends Component {
           }
         );
 
-        
+        axios.get('http://localhost:8111/api/request/instructorsTop5',{
+          headers: {
+            Authorization: this.state.token 
+          }}).then(res => {                 
+                  this.setState({
+                    listOfTop5BasedOnInstructions:res.data          
+                  })
+              }).catch(error =>{
+              
+                  }
+              );       
 
     }
 
@@ -113,14 +124,24 @@ export default class Statistike extends Component {
               <td style={{width:"25%"}}>{item.avgGrade}</td>
           </tr>
     }
+
+    createTop5BasedOnInstructions(item){
+      return <tr>
+      <td style={{width:"50%"}}>{item.firstName + " " + item.lastName}</td>
+      <td style={{width:"50%"}}>{item.numberOfScheduledClasses}</td>
+  </tr>
+    }
     
-    render() {
-      
+    render() {      
       
         if(this.state.listOfStats != null)
             var STATLIST = this.state.listOfStats.map(this.createStats);
         if(this.state.listTop5 != null)
           var TOP5 = this.state.listTop5.map(this.createTop5);
+
+        if(this.state.listOfTop5BasedOnInstructions != null){
+          var TOP5BasedOnInstructions = this.state.listOfTop5BasedOnInstructions.map(this.createTop5BasedOnInstructions);
+        }
 
         const onClick = () => {
             
@@ -156,11 +177,11 @@ export default class Statistike extends Component {
                   <td style={{ background:'#FFC246',width:"50%"}}><Card.Title style={{margin:'5%'}}>Broj Instrukcija</Card.Title></td>
                 </tr>
               </table>
-            </Card>
-              <table id="tabelaStatistike">
+          </Card>
+          <table id="tabelaStatistike">
                   {STATLIST}
-              </table>
-              <Card id="opisKartica" style={{ margin:'auto',width:"80%",height:"110%",marginTop:'30px',background:'#1C8EF9' }}>
+          </table>
+          <Card id="opisKartica" style={{ margin:'auto',width:"80%",height:"110%",marginTop:'30px',background:'#1C8EF9' }}>
               <table style={{ width:"100%", borderWidth:'50px', textAlign:'center'}}>
                 <tr>
                   <td style={{ background:'#3C3A35',width:"25%",color:'white'}}><Card.Title style={{margin:'5%'}}>Instruktor</Card.Title></td>
@@ -168,10 +189,21 @@ export default class Statistike extends Component {
                   <td style={{ background:'rgb(247, 99, 197)',width:"25%"}}><Card.Title style={{margin:'5%'}}> Prosječna ocjena</Card.Title></td>
                 </tr>
               </table>
-            </Card>
-              <table id="tabelaStatistike">
+          </Card>
+          <table id="tabelaStatistike">
                   {TOP5}
+          </table>
+          <Card id="opisKartica" style={{ margin:'auto',width:"80%",height:"110%",marginTop:'30px',background:'#1C8EF9' }}>
+              <table style={{ width:"100%", borderWidth:'50px', textAlign:'center'}}>
+                <tr>
+                  <td style={{ background:'#3C3A35',width:"50%",color:'white'}}><Card.Title style={{margin:'5%'}}>Instruktor</Card.Title></td>
+                  <td style={{ background:'#FFC246',width:"50%"}}><Card.Title style={{margin:'5%'}}>Broj Instrukcija</Card.Title></td>
+                </tr>
               </table>
+          </Card>
+          <table id="tabelaStatistike">
+                  {TOP5BasedOnInstructions}
+          </table>
 			
             </li>
         </ul>
