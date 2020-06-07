@@ -3,6 +3,8 @@ import axios from 'axios';
 import './home.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -16,7 +18,9 @@ import DropdownItem from "react-bootstrap/DropdownItem";
 export default class Home extends Component {
     constructor(props) {
         super(props);
-    }
+    }   
+  
+
     componentDidMount(){
         axios.get('http://localhost:8111/api/management/whoAmI',{
             headers: {
@@ -26,14 +30,23 @@ export default class Home extends Component {
                 localStorage.setItem('currentUserId', res.data.userId);
                 })
                 .catch(error =>{
-                    alert(error);
+                    toast.error('Doslo je do greške!', {
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    });
                 })
     }
+    
     render() {
         
 
         return (
             <div id="pozadina">
+                <ToastContainer></ToastContainer>
                 <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
                     <div className="container">
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo02">

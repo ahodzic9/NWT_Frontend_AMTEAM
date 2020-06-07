@@ -3,6 +3,9 @@ import { useHistory } from 'react-router-dom';
 import SignUp from "../SignUp/signup.js";
 import  './login.css';
 import axios from 'axios';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default class Login extends Component {
     constructor(props) {
@@ -16,6 +19,17 @@ export default class Login extends Component {
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
         //this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+      errorToasterShow(){
+        toast.error('Doslo je do greške!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
       }
 
     handleChangeUsername(event) {
@@ -54,10 +68,8 @@ export default class Login extends Component {
                     window.location.replace("/home");
                 })
                 .catch(error =>{
-                    alert(error);
-                })
-                
-                
+                    this.errorToasterShow();
+                })                          
             }
           })
           .catch(function (error) {
@@ -70,6 +82,7 @@ export default class Login extends Component {
     render() {
         return (
             <div id="loginDiv">
+            <ToastContainer></ToastContainer>
             <form onSubmit = {this.onClick}>
                 <h3>Sign In</h3>
 

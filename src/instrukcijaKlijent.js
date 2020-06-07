@@ -4,14 +4,16 @@ import './instrukcijaKlijent.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import ListGroup from"react-bootstrap/ListGroup";
-import ListGroupItem from "react-bootstrap/ListGroupItem";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownMenu from "react-bootstrap/DropdownMenu";
-import DropdownItem from "react-bootstrap/DropdownItem";
+// import Button from "react-bootstrap/Button";
+// import ListGroup from"react-bootstrap/ListGroup";
+// import ListGroupItem from "react-bootstrap/ListGroupItem";
+// import DropdownButton from "react-bootstrap/DropdownButton";
+// import Dropdown from "react-bootstrap/Dropdown";
+// import DropdownMenu from "react-bootstrap/DropdownMenu";
+// import DropdownItem from "react-bootstrap/DropdownItem";
 import Rating from '@material-ui/lab/Rating';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class InstrukcijaKlijent extends Component {
     constructor(props) {
@@ -36,12 +38,36 @@ export default class InstrukcijaKlijent extends Component {
         };
         this.handleChangeGrade = this.handleChangeGrade.bind(this);
         this.handleChangeComment = this.handleChangeComment.bind(this);
+        this.errorToasterShow = this.errorToasterShow.bind(this);
+        this.sucessToasterShow = this.sucessToasterShow.bind(this);
       }
 
     
     onClick = event => {
        
           
+    }
+
+    errorToasterShow(){
+        toast.error('Doslo je do greške. Instruktor nije ocijenjen!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
+    }
+
+    sucessToasterShow(){
+        toast.success('Uspješno ste ocijenili instruktora', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
 
     handleChangeGrade(event) {
@@ -56,16 +82,30 @@ export default class InstrukcijaKlijent extends Component {
               }
           })
           .then(function (response) {
-              //alert(response.status);
             if(response.status == 200){
-                alert("Uspjesno ste ocijenili instruktora!");
+                toast.success('Uspješno ste ocijenili instruktora', {
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
           })
           .catch(function (error) {
-              alert(error);
-            
+            toast.error('Doslo je do greške. Instruktor nije ocijenjen!', {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });          
           });
     }
+
+  
 
     handleChangeComment(event){
         this.setState({comment: event.target.value});
@@ -135,38 +175,38 @@ export default class InstrukcijaKlijent extends Component {
 
 
         return (
-            <Card id="instruktorKartica" style={{ width: '80%' }}>
-                <table class="datumOcjena">
-                    <tr>
-                        <td><Card.Img class="profilnaSlika" variant="top" src="profile.jpg" /></td>
-                        <td><Card.Body id="instruktorInfo">
-                            <Card.Title id="naslov">{this.state.firstNameInstruktora} {this.state.lastNameInstruktora}</Card.Title>
-                            <Card.Text id="asda">{this.state.subjectName}: {this.state.subjectDescription}</Card.Text>
-                            <Card.Text>Datum: {this.state.scheduledDate}</Card.Text>
+            <div>
+                <Card id="instruktorKartica" style={{ width: '80%' }}>
+                    <table class="datumOcjena">
+                        <tr>
+                            <td><Card.Img class="profilnaSlika" variant="top" src="profile.jpg" /></td>
+                            <td><Card.Body id="instruktorInfo">
+                                <Card.Title id="naslov">{this.state.firstNameInstruktora} {this.state.lastNameInstruktora}</Card.Title>
+                                <Card.Text id="asda">{this.state.subjectName}: {this.state.subjectDescription}</Card.Text>
+                                <Card.Text>Datum: {this.state.scheduledDate}</Card.Text>
 
-                            <Rating
-                                value={3}
-                                max={5}
-                                onChange= {this.handleChangeGrade}
-                                />
-                            <input id = "comment" onChange={this.handleChangeComment} type="username" className="form-control" placeholder="Dodajte komentar" />
-                            </Card.Body>
-                        </td>
-                        
-                        <td><Card.Body id="instruktorInfo">
-                            <Card.Title id="naslov">{this.state.firstNameKlijenta} {this.state.lastNameKlijenta}</Card.Title>
-                            <Card.Text id="asda">Broj časova: {this.state.numberOfClasses}</Card.Text>
-                            <Card.Text style={{color:'green'}} id="aktivnaInstrukcija">Instrukcija aktivna</Card.Text>
-                            </Card.Body>
-                        </td>
-                        <td><Card.Img id="profilnaSlikaKlijent" variant="top" src="client.png" /></td>
-                    </tr>
-                </table>
-                
-                   
-                    
-                
-            </Card>
+                                <Rating
+                                    value={3}
+                                    max={5}
+                                    onChange= {this.handleChangeGrade}
+                                    />
+                                <input id = "comment" onChange={this.handleChangeComment} type="username" className="form-control" placeholder="Dodajte komentar" />
+                                </Card.Body>
+                            </td>
+                            
+                            <td><Card.Body id="instruktorInfo">
+                                <Card.Title id="naslov">{this.state.firstNameKlijenta} {this.state.lastNameKlijenta}</Card.Title>
+                                <Card.Text id="asda">Broj časova: {this.state.numberOfClasses}</Card.Text>
+                                { this.state.active ? <Card.Text style={{color:'green'}} id="aktivnaInstrukcija">Aktivna</Card.Text> : <Card.Text style={{color:'red'}} id="aktivnaInstrukcija">Nije aktivna</Card.Text>}
+                                </Card.Body>
+                            </td>
+                            <td><Card.Img id="profilnaSlikaKlijent" variant="top" src="client.png" /></td>
+                        </tr>
+                    </table>                 
+                </Card>
+                <ToastContainer />
+            </div>
+            
         );
     }
 }

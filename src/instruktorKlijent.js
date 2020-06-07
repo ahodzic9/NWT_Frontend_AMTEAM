@@ -12,6 +12,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import Modal from 'react-modal';
+import {toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 
 export default class InstruktorKlijent extends Component {
     constructor(props) {
@@ -31,7 +34,9 @@ export default class InstruktorKlijent extends Component {
             selectedSubject: null,
             selectedSubjectMessage: "Izaberite predmet",
             selectedDate: null,
-            selectedNumberOfClasses: 0
+            selectedNumberOfClasses: 0,
+            errorMessageDate : false,
+            errorMessageClasses : false,
         };
         this.createGradeList = this.createGradeList.bind(this);
         this.toggleModal = this.toggleModal.bind(this);       
@@ -40,6 +45,7 @@ export default class InstruktorKlijent extends Component {
         this.handleNumberOfClasses = this.handleNumberOfClasses.bind(this);
         this.handleOnSubmit = this.handleOnSubmit.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.errorToasterShow = this.errorToasterShow.bind(this);
       }
 
     
@@ -95,35 +101,70 @@ export default class InstruktorKlijent extends Component {
         this.setState({ modalOpened: false});
     }
 
-    handleDateChange(event){
-        this.setState({selectedDate: event.target.value});
+    handleDateChange(event){       
+        if(new Date(event.target.value) <= new Date()){
+          this.setState({errorMessageDate: true});
+        } else{
+            this.setState({errorMessageDate: false});
+            this.setState({selectedDate: event.target.value});
+        }       
     }
 
     handleNumberOfClasses(event){
-        this.setState({selectedNumberOfClasses: event.target.value});
+        if(event.target.value<1 || event.target.value>3){
+            this.setState({errorMessageClasses: true});
+        } else{
+            this.setState({selectedNumberOfClasses: event.target.value});
+            this.setState({errorMessageClasses: false});
+        }
+       
     }
 
-    handleOnSubmit(event){
-        event.preventDefault();
-        var instructionRequest = {
-            "scheduledDate": "2020-09-16T23:24:08.212-00:00",
-	        "numberOfClasses": this.state.selectedNumberOfClasses
-          };
-          console.log(this.state.selectedDate +" " + this.state.selectedSubject);
-        if(this.state.selectedDate != null && this.state.selectedNumberOfClasses!=0){
+    errorToasterShow(){
+        toast.error('Upisani podaci su neispravni. Instrukcija nije zakazana!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
+    }
+
+    sucessToasterShow(){
+        toast.success('Uspješno ste zakazali instrukciju', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
+    handleOnSubmit(event){        
+        event.preventDefault();    
+        if(this.state.selectedDate == null || this.state.selectedNumberOfClasses<1 || this.state.selectedNumberOfClasses>3 || this.state.selectedSubject == null){
+            this.errorToasterShow();
+        } else{
+            var instructionRequest = {
+                "scheduledDate": new Date(this.state.selectedDate),
+                "numberOfClasses": this.state.selectedNumberOfClasses
+            };
+            console.log(this.state.selectedDate +" " + this.state.selectedSubject);
+            if(this.state.selectedDate != null && this.state.selectedNumberOfClasses!=0){
                 axios.post('http://localhost:8111/api/request/instruction/'+this.props.id + '/' + localStorage.getItem("currentUserId") +'/'+ this.state.selectedSubject,
-                 instructionRequest, {
-                    headers: {
-                        Authorization: this.state.token 
-                    }}).then(res => {
-                        this.setState({ modalOpened: false});
-                  }).catch(err =>{
-                      alert("Instruktor nema raspoloživ uneseni broj časova!");
-                  });
-
-        }
-
-
+                    instructionRequest, {
+                        headers: {
+                            Authorization: this.state.token 
+                        }}).then(res => {
+                            this.setState({ modalOpened: false});
+                            this.sucessToasterShow();
+                    }).catch(err =>{                       
+                        this.errorToasterShow();
+                    });
+            }
+        }    
     }
 
 
@@ -141,8 +182,9 @@ export default class InstruktorKlijent extends Component {
             
         }
 
-        return (
+        return (            
             <div>
+                <ToastContainer />
                 <Card id="instruktorKartica" style={{ width: '80%' }}>
                 <table class="datumOcjena">
                     <tr>
@@ -195,9 +237,9 @@ export default class InstruktorKlijent extends Component {
            <form onSubmit={this.handleOnSubmit} style = {{'display' :' flex', 'flex-direction': 'column', 'justify-content': 'center', 'align-items':'center'}} >
                 
                 <label>Datum instrukcije:</label><input type="date" onChange = {this.handleDateChange} style = {{'width': '250px'}}></input>
-                <label>Broj casova:</label>  <input type="number" onChange = {this.handleNumberOfClasses} style = {{'width': '250px'}}></input>   
+                <label>Broj casova:</label>  <input type="number" min="0" max ="5" onChange = {this.handleNumberOfClasses} style = {{'width': '250px'}}></input>   
                
-                <Dropdown style ={{'margin-top' : '20px', 'margin-bottom': '20px'}}>
+                <Dropdown style ={{'margin-top' : '7px', 'margin-bottom': '7px'}}>
                 <Dropdown.Toggle variant="info" id="dropdown-basic">
                                         {this.state.selectedSubjectMessage}
                                         </Dropdown.Toggle>
@@ -205,11 +247,17 @@ export default class InstruktorKlijent extends Component {
                                             {SL2}
                 </Dropdown.Menu>
                 </Dropdown>
+                { this.state.errorMessageDate ? <div id="error" >
+                    <label style={{'color':'red', 'font-size': 'small'}}>Unesite ispravan datum</label>
+                </div> : null }
+                { this.state.errorMessageClasses ? <div id="error" >
+                    <label style={{'color':'red', 'font-size': 'small'}}>Unesite ispravan broj casova (max 3)</label>
+                </div> : null }
+
                 <div style={{'display':'flex', 'flex-direction':'row', 'justify-content':'space-around'}}>
-                    <button type="submit" class="btn btn-primary" style = {{'width': '160px', 'margin-right': '20px'}}>Zakazi instrukciju</button>   
+                    <button disabled = {this.state.errorMessageClasses || this.state.errorMessageDate || this.state.selectedSubject==null || this.state.selectedDate==null || this.state.selectedNumberOfClasses==0} type="submit" class="btn btn-primary" style = {{'width': '160px', 'margin-right': '20px'}}>Zakazi instrukciju</button>   
                     <button class="btn btn-info" onClick={this.handleCloseModal}>Zatvori</button>       
-                </div>
-                
+                </div>               
        
            </form>
                

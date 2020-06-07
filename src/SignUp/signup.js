@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import  './signup.css';
 import axios from 'axios';
 
+
 export default class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -17,7 +18,7 @@ export default class SignUp extends Component {
         this.handleChangeLastName = this.handleChangeLastName.bind(this);
         //this.handleSubmit = this.handleSubmit.bind(this);
       }
-
+    
     handleChangeUsername(event) {
         this.setState({username: event.target.value});
     }
@@ -41,13 +42,11 @@ export default class SignUp extends Component {
                 "userName": this.state.username
               })
               .then(function (response) {
-                  //alert(response.status);
                 if(response.status == 200){
                     window.location.replace("/poc");
                 }
               })
               .catch(function (error) {
-                  //alert(error.text);
                 document.getElementById("pogresni_podaci").style.display = 'block';
               });
             }

@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Instrukcija from './instrukcija.js';
 import InstrukcijaKlijent from './instrukcijaKlijent.js';
 import './instrukcije.css';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default class Instrukcije extends Component {
     constructor(props) {
@@ -17,6 +20,19 @@ export default class Instrukcije extends Component {
         this.onHover = this.onHover.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
     }
+
+    
+    errorToasterShow(){
+        toast.error('Doslo je do greške!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
+      }
+
     componentDidMount(){
         if(this.props.idInstruktora != null){
             axios.get('http://localhost:8111/api/request/instructions/'+this.props.idInstruktora,{
@@ -27,7 +43,7 @@ export default class Instrukcije extends Component {
                                 
             this.setState({listOfInstructionsNull : false})
             }).catch( error =>{
-                //alert(error);
+                this.errorToasterShow();
             }
             );
         }
@@ -40,7 +56,7 @@ export default class Instrukcije extends Component {
                                 
             this.setState({listOfInstructionsNull : false})
             }).catch( error =>{
-                //alert(error);
+                this.errorToasterShow();
             }
             );
         }
@@ -88,14 +104,13 @@ export default class Instrukcije extends Component {
         
         return (
             <div style={{'height':'100%'}}>
-        <div id="chatRoom">
-            <div id="list">
-        {this.state.listOfInstructionsNull ? null :
-        <ul class = "listaKartica">{IL}</ul>}
+                <ToastContainer></ToastContainer>
+                <div id="chatRoom">
+                    <div id="list">
+                        {this.state.listOfInstructionsNull ? null : <ul class = "listaKartica">{IL}</ul>}
+                    </div>            
+                </div>
             </div>
-            
-            </div>
-        </div>
         );
     }
 }

@@ -3,6 +3,8 @@ import axios from 'axios';
 import './homeAdmin.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -17,7 +19,8 @@ export default class HomeAdmin extends Component {
     constructor(props) {
         super(props);
     }
-    componentDidMount(){
+
+     componentDidMount(){
         axios.get('http://localhost:8111/api/management/whoAmI',{
             headers: {
               Authorization: localStorage.getItem('token')
@@ -26,7 +29,14 @@ export default class HomeAdmin extends Component {
                 localStorage.setItem('currentUserId', res.data.userId);
                 })
                 .catch(error =>{
-                    alert(error);
+                    toast.error('Došlo je do greške!', {
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    });                    
                 })
     }
     
@@ -35,6 +45,7 @@ export default class HomeAdmin extends Component {
 
         return (
             <div id="pozadina">
+                <ToastContainer/>
                 <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
                     <div className="container">
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
@@ -72,9 +83,7 @@ export default class HomeAdmin extends Component {
                         <td><img id="statistikeSlika" src="statistikeLogo.png" /></td>
                         
                     </tr>
-                </table>
-                
-                
+                </table>                              
             </div>
         );
     }

@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Instruktor from './instruktor.js';
 import InstruktorKlijent from './instruktorKlijent.js';
 import './pocetna.css';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default class Pocetna extends Component {
     constructor(props) {
@@ -23,6 +26,7 @@ export default class Pocetna extends Component {
         this.onHover = this.onHover.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
     }
+
     componentDidMount(){
 
         axios.get('http://localhost:8111/api/management/instructors',{
@@ -34,7 +38,14 @@ export default class Pocetna extends Component {
                             
         this.setState({listOfInstructorsNull : false})
           }).catch( error =>{
-              alert(error);
+              toast.error('Doslo je do greške!', {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
           }
         );
 
@@ -47,7 +58,14 @@ export default class Pocetna extends Component {
                             
         this.setState({listOfClientsNull : false})
           }).catch( error =>{
-              alert(error);
+              toast.error('Doslo je do greške!', {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
           }
         );
 
@@ -96,6 +114,7 @@ export default class Pocetna extends Component {
         
         return (
             <div style={{'height':'100%'}}><nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <ToastContainer></ToastContainer>
             <div className="container">
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">

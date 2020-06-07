@@ -113,7 +113,7 @@ export default class Instrukcija extends Component {
                         <td><Card.Body id="instruktorInfo">
                             <Card.Title id="naslov">{this.state.firstNameKlijenta} {this.state.lastNameKlijenta}</Card.Title>
                             <Card.Text id="asda">Broj časova: {this.state.numberOfClasses}</Card.Text>
-                            <Card.Text style={{color:'green'}} id="aktivnaInstrukcija">Instrukcija aktivna</Card.Text>
+                            {this.state.active ? <Card.Text style={{color:'green'}} id="aktivnaInstrukcija">Aktivna</Card.Text> : <Card.Text style={{color:'red'}} id="aktivnaInstrukcija">Nije aktivna</Card.Text>}
                             </Card.Body>
                         </td>
                         <td><Card.Img id="profilnaSlikaKlijent" variant="top" src="client.png" /></td>

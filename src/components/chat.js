@@ -1,6 +1,11 @@
 import React, { Component, useImperativeHandle } from "react";
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 export default class Chat extends Component {
     constructor(props) {
         super(props);
@@ -29,6 +34,18 @@ export default class Chat extends Component {
     componentWillUnmount() {
         clearInterval(this.interval);
       }
+
+      errorToasterShow(){
+        toast.error('Doslo je do greške!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
+      }
+
     componentDidMount(){
         this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
         if(localStorage.getItem('currentUserRole')==2){
@@ -41,7 +58,7 @@ export default class Chat extends Component {
                             
         this.setState({listOfClientsNull : false})
           }).catch( error =>{
-              alert(error);
+              this.errorToasterShow();
           }
         )
         }
@@ -55,7 +72,7 @@ export default class Chat extends Component {
                             
         this.setState({listOfClientsNull : false})
           }).catch( error =>{
-              alert(error);
+              this.errorToasterShow();
           }
         )
         }
@@ -80,14 +97,13 @@ export default class Chat extends Component {
             this.setState({messageList:res.data});
             this.setState({isMessageListEmpty: false});
             }).catch( error =>{
-                //alert(error);
-                if(error.response.status == '404'){
+                 if(error.response.status == '404'){
                     this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
                 }
             }
           )
         }).catch(error =>{
-            alert(error);
+            this.errorToasterShow();
         })
     }else if(localStorage.getItem('currentUserRole') == 3){
         message.sender = 'client';
@@ -102,14 +118,13 @@ export default class Chat extends Component {
         this.setState({messageList:res.data});
         this.setState({isMessageListEmpty: false});
         }).catch( error =>{
-            //alert(error);
             if(error.response.status == '404'){
                 this.setState({emptyMessageList:error.response.data.errorMessage, isMessageListEmpty:true,messageList:null})
             }
         }
       )
     }).catch(error =>{
-        alert(error);
+        this.errorToasterShow();
     })
 }
 
@@ -281,6 +296,7 @@ export default class Chat extends Component {
         var CM = this.state.messageList.map(this.createMessageList);
         return (
             <div style={{'height':'100%'}}><nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <ToastContainer></ToastContainer>
             <div className="container">
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">

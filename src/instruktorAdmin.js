@@ -13,6 +13,9 @@ import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import Modal from 'react-modal';
 import { Input } from "@material-ui/core";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default class InstruktorAdmin extends Component {
     constructor(props) {
@@ -135,6 +138,17 @@ export default class InstruktorAdmin extends Component {
         this.setState({selectedNumberOfClasses: event.target.value});
     }
 
+    errorToasterShow(){
+        toast.error('Doslo je do greške!', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+        });
+      }
+
     handleOnSubmit(event){
         event.preventDefault();
         var instructionRequest = {
@@ -150,7 +164,7 @@ export default class InstruktorAdmin extends Component {
                       }}).then(res => {
                             this.setState({ modalOpened: false});
                       }).catch(err =>{
-                          alert(err);
+                         this.errorToasterShow();
                       });
         }
 
@@ -262,7 +276,7 @@ handleOnSubmitNewCourse(e){
                 this.setState({ modalOpened: false});
                 
               }).catch(err => {
-                 alert(err) 
+                 this.errorToasterShow(); 
               });
 }
 
@@ -278,6 +292,7 @@ handleOnSubmitNewCourse(e){
    
         return (
             <div>
+                <ToastContainer></ToastContainer>
                 <Card id="instruktorKartica" style={{ width: '80%' }}>
                 <table class="datumOcjena">
                     <tr>
@@ -395,7 +410,7 @@ handleOnSubmitNewCourse(e){
                 
             
            </Modal>
-            </div>
+         </div>
             
         );
     }
