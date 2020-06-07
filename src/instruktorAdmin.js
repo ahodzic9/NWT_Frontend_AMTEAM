@@ -89,7 +89,7 @@ export default class InstruktorAdmin extends Component {
         
         if(this.props.maxNumberOfInstructions/this.props.numberOfScheduledInstructions < 2)
             this.setState({preko50Posto:true});
-        if(this.props.maxNumberOfInstructions == this.props.numberOfScheduledInstructions)
+        if(this.props.maxNumberOfInstructions <= this.props.numberOfScheduledInstructions)
             this.setState({popunjenInstruktor:true});
         
         axios.get('http://localhost:8111/api/rating/grades-instructor-all/'+this.props.id,{
